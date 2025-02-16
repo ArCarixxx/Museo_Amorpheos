@@ -1,65 +1,55 @@
-/* server/Conection.js */
-
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
-const multer = require("multer");
-const path = require('path');
 
 const app = express();
-app.use(cors());
-app.use(express.json()); // Asegúrate de incluir este middleware
-app.use(express.urlencoded({ extended: true })); // Middleware para URL-encoded
+app.use(express.json());
+app.use(cors()); // Habilita CORS para que el frontend pueda acceder
 
-const PORT = 3001;
-
-app.use(express.urlencoded({ extended: true })); // Para datos URL-encoded
-
-
-//conexion a la base de datos----------IMPORTANTE
-
+// Conexión a la base de datos
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "1234", // 11352871
-  database: "qrmuseos",
+  user: "root", // Asegúrate de cambiar esto si es necesario
+  password: "030772", // Tu contraseña
+  database: "MuseoDB",
 });
 
-// Manejo de conexión
 db.connect((err) => {
-    if (err) {
-      console.error("❌ Error conectando a la base de datos:", err);
-      return;
-    }
-    console.log("✅ Conectado a la base de datos");
-  });
-  
-// Inicia el servidor
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  });
-
-
-  db.query('SHOW TABLES', (err, results) => {
-    if (err) {
-        console.error('Error en la consulta:', err);
-    } else {
-        console.log('Tablas en la base de datos:', results);
-    }
+  if (err) {
+    console.error("Error conectando a la base de datos:", err);
+  } else {
+    console.log("Conectado a la base de datos MySQL");
+  }
 });
 
+// Ruta para obtener una obra por ID y actualizar visitas
 app.get("/obras/:id", (req, res) => {
-  const obraId = req.params.id;
-  const query = "SELECT * FROM Objeto_museo WHERE idObjeto = ?"; // Asegúrate de usar el nombre correcto de la columna
+  const { id } = req.params;
 
-  db.query(query, [obraId], (err, results) => {
+  // Aumentar visitas
+  const updateQuery = "UPDATE Objeto_museo SET n_visitas = n_visitas + 1 WHERE idObjeto = ?";
+  db.query(updateQuery, [id], (err) => {
     if (err) {
-      console.error("❌ Error obteniendo la obra:", err);
-      return res.status(500).json({ error: "Error en la consulta" });
+      console.error("Error al actualizar visitas:", err);
+      return res.status(500).json({ error: "Error al actualizar visitas" });
     }
-    if (results.length === 0) {
-      return res.status(404).json({ error: "Obra no encontrada" });
-    }
-    res.json(results[0]); // Devolver solo el primer resultado
+
+    // Obtener la obra
+    const selectQuery = "SELECT * FROM Objeto_museo WHERE idObjeto = ?";
+    db.query(selectQuery, [id], (err, results) => {
+      if (err) {
+        console.error("Error obteniendo la obra:", err);
+        return res.status(500).json({ error: "Error obteniendo la obra" });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ error: "Obra no encontrada" });
+      }
+      res.json(results[0]);
+    });
   });
+});
+
+const PORT = 3001;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
