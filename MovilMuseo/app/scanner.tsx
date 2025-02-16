@@ -7,6 +7,7 @@ import { View, Text,AppState,
     StyleSheet, } from "react-native";
 import { Camera, CameraView } from "expo-camera";
 import { Stack } from "expo-router";
+import { Overlay } from "./Overlay";
 
 import { useEffect, useRef } from "react";
 
@@ -51,6 +52,7 @@ export default function ScannerScreen() {
           }
         }}
       />
+      <Overlay />
     </SafeAreaView>
   );
 }
