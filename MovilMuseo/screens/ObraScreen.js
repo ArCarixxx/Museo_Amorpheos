@@ -1,18 +1,42 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 
-const placeholderImage = require('../assets/Gioconda.jpg')
+const placeholderImage = require('../assets/Gioconda.jpg');
 
-const ObjetoMuseo = () => {
-  const [obra, setObra] = useState({
-    nombre: 'La Gioconda',
-    descripcion: 'Una de las pinturas más famosas del mundo, obra de Leonardo da Vinci.',
-    categoria: 'Pintura',
-    n_visitas: 1500000,
-    latitude: 48.860611,
-    longitude: 2.337644,
-    imageUrl: null,
-  });
+const ObjetoMuseo = ({ route }) => {
+  const { id } = route.params; // Obtener ID desde las props de navegación
+  const [obra, setObra] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchObra = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/obras/${id}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          setObra(data);
+        } else {
+          console.error("Error:", data.error);
+        }
+      } catch (error) {
+        console.error("Error al obtener la obra:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchObra();
+  }, [id]);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#8B4513" />;
+  }
+
+  if (!obra) {
+    return <Text>No se encontró la obra</Text>;
+  }
+
   return (
     <View style={styles.container}>
       <Image 
@@ -60,6 +84,5 @@ const styles = StyleSheet.create({
     color: '#8B4513',
   },
 });
-
 
 export default ObjetoMuseo;

@@ -47,3 +47,19 @@ app.listen(PORT, () => {
         console.log('Tablas en la base de datos:', results);
     }
 });
+
+app.get("/obras/:id", (req, res) => {
+  const obraId = req.params.id;
+  const query = "SELECT * FROM Objeto_museo WHERE idObjeto = ?"; // Asegúrate de usar el nombre correcto de la columna
+
+  db.query(query, [obraId], (err, results) => {
+    if (err) {
+      console.error("❌ Error obteniendo la obra:", err);
+      return res.status(500).json({ error: "Error en la consulta" });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Obra no encontrada" });
+    }
+    res.json(results[0]); // Devolver solo el primer resultado
+  });
+});

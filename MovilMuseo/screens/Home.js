@@ -10,7 +10,7 @@ const Home = ({ navigation }) => {
             <Image source={require('../assets/LogoMuseo.png')} style={styles.image} />
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('UserInfo', { id: 1 })}
+                onPress={() => navigation.navigate('ObraInfo', { id: 1 })}
             >
                 <Text style={styles.buttonText}>informacion Obra</Text>
             </TouchableOpacity>
