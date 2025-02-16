@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Button, View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
+import ExhibitionScreen from './ExhibitionScreen'; // Importa la nueva pantalla
 
 // Pantalla de inicio
 function HomeScreen({ navigation }: { navigation: any }) {
@@ -9,7 +10,7 @@ function HomeScreen({ navigation }: { navigation: any }) {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Bienvenidos al Museo Amorpheos</Text>
       <Image
-        source={{ uri: 'https://path/to/your/image.jpg' }} // Cambia esto por una URL o una imagen local
+        source={{ uri: 'https://path/to/your/image.jpg' }}
         style={styles.image}
       />
       <Text style={styles.description}>
@@ -18,7 +19,12 @@ function HomeScreen({ navigation }: { navigation: any }) {
       <Button
         title="Explorar Exhibiciones"
         onPress={() => navigation.navigate('Details')}
-        color="#5F4B8B" // Un color atractivo que puedes personalizar
+        color="#5F4B8B"
+      />
+      <Button
+        title="Ver Exhibición Especial" // Nuevo botón
+        onPress={() => navigation.navigate('Exhibition')}
+        color="#008080"
       />
     </ScrollView>
   );
@@ -33,7 +39,7 @@ function DetailsScreen() {
         Descubre las colecciones más impactantes del Museo Amorpheos, una experiencia que cautivará tus sentidos.
       </Text>
       <Image
-        source={{ uri: 'https://path/to/another/image.jpg' }} // Otra imagen relevante
+        source={{ uri: 'https://path/to/another/image.jpg' }}
         style={styles.image}
       />
     </ScrollView>
@@ -50,6 +56,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="Exhibition" component={ExhibitionScreen} />
       </Stack.Navigator>
     </PaperProvider>
   );
