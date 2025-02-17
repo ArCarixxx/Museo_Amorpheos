@@ -1,55 +1,46 @@
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
+const admin = require("firebase-admin");
 
-const app = express();
-app.use(express.json());
-app.use(cors()); // Habilita CORS para que el frontend pueda acceder
+// Inicializa Firebase Admin SDK (usa la clave de servicio que debes descargar desde Firebase)
+const serviceAccount = require("./museobd-serviceAccountKey.json");
 
-// Conexión a la base de datos
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root", // Asegúrate de cambiar esto si es necesario
-  password: "030772", // Tu contraseña
-  database: "MuseoDB",
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://museobd-58426.firebaseio.com"
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error("Error conectando a la base de datos:", err);
-  } else {
-    console.log("Conectado a la base de datos MySQL");
+const db = admin.firestore();
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+// Ruta para obtener un objeto de museo por ID y actualizar las visitas
+app.get("/obras/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const obraRef = db.collection("Objeto_museo").doc(id);
+    const obraDoc = await obraRef.get();
+
+    if (!obraDoc.exists) {
+      return res.status(404).json({ error: "Obra no encontrada" });
+    }
+
+    const obraData = obraDoc.data();
+
+    // Incrementar visitas
+    await obraRef.update({ n_visitas: admin.firestore.FieldValue.increment(1) });
+
+    res.json({ id: obraDoc.id, ...obraData });
+  } catch (error) {
+    console.error("Error al obtener la obra:", error);
+    res.status(500).json({ error: "Error en el servidor" });
   }
 });
 
-// Ruta para obtener una obra por ID y actualizar visitas
-app.get("/obras/:id", (req, res) => {
-  const { id } = req.params;
-
-  // Aumentar visitas
-  const updateQuery = "UPDATE Objeto_museo SET n_visitas = n_visitas + 1 WHERE idObjeto = ?";
-  db.query(updateQuery, [id], (err) => {
-    if (err) {
-      console.error("Error al actualizar visitas:", err);
-      return res.status(500).json({ error: "Error al actualizar visitas" });
-    }
-
-    // Obtener la obra
-    const selectQuery = "SELECT * FROM Objeto_museo WHERE idObjeto = ?";
-    db.query(selectQuery, [id], (err, results) => {
-      if (err) {
-        console.error("Error obteniendo la obra:", err);
-        return res.status(500).json({ error: "Error obteniendo la obra" });
-      }
-      if (results.length === 0) {
-        return res.status(404).json({ error: "Obra no encontrada" });
-      }
-      res.json(results[0]);
-    });
-  });
-});
-
+// Iniciar servidor
 const PORT = 3001;
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
