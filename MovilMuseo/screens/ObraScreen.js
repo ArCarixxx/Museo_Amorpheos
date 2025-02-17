@@ -1,24 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator, ScrollView } from 'react-native';
-
-const API_URL = "http://192.168.1.181:3001"; // Asegúrate de usar la IP correcta de tu PC
+import { db } from '../firebaseConfig';
+import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
 
 const placeholderImage = require('../assets/Gioconda.jpg');
 
 const ObjetoMuseo = ({ route }) => {
-  const id = 1;
+  const id = "9pSn7APjIepGejEZWVHq";  // Asegura que el ID provenga de params
   const [obra, setObra] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!id) {
+      console.error("No se proporcionó un ID de obra");
+      setLoading(false);
+      return;
+    }
+
     const fetchObra = async () => {
       try {
-        const response = await fetch(`${API_URL}/obras/${id}`);
-        if (!response.ok) {
-          throw new Error('Error en la respuesta del servidor');
+        const obraRef = doc(db, "Objeto_museo", id);
+        const obraSnap = await getDoc(obraRef);
+
+        if (!obraSnap.exists()) {
+          throw new Error('Obra no encontrada');
         }
-        const data = await response.json();
-        setObra(data);
+
+        setObra(obraSnap.data());
+
+        // Intentar actualizar visitas, pero manejar errores si no hay permisos
+        try {
+          await updateDoc(obraRef, { n_visitas: increment(1) });
+        } catch (error) {
+          console.warn("No se pudo actualizar el contador de visitas:", error);
+        }
+
       } catch (error) {
         console.error("Error al obtener la obra:", error);
       } finally {
