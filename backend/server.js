@@ -10,7 +10,7 @@ app.use(cors()); // Habilita CORS para que el frontend pueda acceder
 const db = mysql.createConnection({
   host: "localhost",
   user: "root", // Asegúrate de cambiar esto si es necesario
-  password: "030772", // Tu contraseña
+  password: "1234", // Tu contraseña
   database: "MuseoDB",
 });
 

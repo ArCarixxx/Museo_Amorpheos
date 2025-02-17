@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator, ScrollView } from 'react-native';
 
-const API_URL = "http://192.168.1.181:3001"; // Asegúrate de usar la IP correcta de tu PC
+const API_URL = "http://192.168.100.54:3001"; // Asegúrate de usar la IP correcta de tu PC
 
 const placeholderImage = require('../assets/Gioconda.jpg');
 
