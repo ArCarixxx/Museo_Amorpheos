@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Text, AppState, Platform, SafeAreaView, StatusBar, StyleSheet, Alert } from "react-native";
 import { Camera, CameraView } from "expo-camera";
 import { Overlay } from "./Overlay";
+import { useNavigation } from "@react-navigation/native"; // 📌 Importamos la navegación
 
 export default function ScannerScreen() {
-    const [scannedText, setScannedText] = useState(null); // 📌 Estado para almacenar el texto escaneado
+    const navigation = useNavigation(); // 📌 Hook de navegación
     const qrLock = useRef(false);
     const appState = useRef(AppState.currentState);
+    const [scannedText, setScannedText] = useState(null);
 
     useEffect(() => {
         const subscription = AppState.addEventListener("change", (nextAppState) => {
@@ -25,9 +27,18 @@ export default function ScannerScreen() {
         if (data && !qrLock.current) {
             qrLock.current = true;
 
-            // 📌 Mostrar el texto escaneado en una alerta
-            setScannedText(data);
-            Alert.alert("Texto Escaneado", data);
+            // 📌 Extraer ID desde el QR (suponiendo que el QR tiene solo el número)
+            const obraId = parseInt(data);
+
+            if (!isNaN(obraId) && obraId > 0) {
+                setScannedText(`Obra ID: ${obraId}`);
+                //Alert.alert("Código Escaneado", `Redirigiendo a la obra con ID: ${obraId}`);
+
+                // 📌 Redirigir a la pantalla de Obra con el ID extraído del QR
+                navigation.navigate("ObraInfo", { id: obraId });
+            } else {
+                Alert.alert("Error", "El código QR no contiene un ID válido.");
+            }
 
             // Permitir escaneo nuevamente después de 2 segundos
             setTimeout(() => {
@@ -52,7 +63,7 @@ export default function ScannerScreen() {
             {/* 📌 Mostrar el texto escaneado en la pantalla */}
             {scannedText && (
                 <View style={styles.textContainer}>
-                    <Text style={styles.text}>Texto Escaneado: {scannedText}</Text>
+                    <Text style={styles.text}>{scannedText}</Text>
                 </View>
             )}
         </SafeAreaView>
