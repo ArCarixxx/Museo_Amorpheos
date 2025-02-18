@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
 
-// Inicializa Firebase Admin SDK (usa la clave de servicio que debes descargar desde Firebase)
 const serviceAccount = require("./museobd-serviceAccountKey.json");
 
 admin.initializeApp({
@@ -16,7 +15,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Ruta para obtener un objeto de museo por ID y actualizar las visitas
 app.get("/obras/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -29,7 +27,6 @@ app.get("/obras/:id", async (req, res) => {
 
     const obraData = obraDoc.data();
 
-    // Incrementar visitas
     await obraRef.update({ n_visitas: admin.firestore.FieldValue.increment(1) });
 
     res.json({ id: obraDoc.id, ...obraData });

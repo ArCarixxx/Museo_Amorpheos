@@ -1,24 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator, ScrollView, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react'; 
+import { View, Text, StyleSheet, Image, ActivityIndicator, ScrollView } from 'react-native';
 import { db } from '../firebaseConfig';
 import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
 
 const placeholderImage = require('../assets/Gioconda.jpg');
 
-const ObjetoMuseo = ({ route }) => {
-  const navigation = useNavigation();
+const ObraDetalles = ({ route }) => {
   const { id } = route.params; 
   const [obra, setObra] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) {
-      console.error("No se proporcionó un ID de obra");
-      setLoading(false);
-      return;
-    }
-
     const fetchObra = async () => {
       try {
         const obraRef = doc(db, "Objeto_museo", id);
@@ -30,12 +22,7 @@ const ObjetoMuseo = ({ route }) => {
 
         setObra(obraSnap.data());
 
-        try {
-          await updateDoc(obraRef, { n_visitas: increment(1) });
-        } catch (error) {
-          console.warn("No se pudo actualizar el contador de visitas:", error);
-        }
-
+        await updateDoc(obraRef, { n_visitas: increment(1) });
       } catch (error) {
         console.error("Error al obtener la obra:", error);
       } finally {
@@ -44,7 +31,7 @@ const ObjetoMuseo = ({ route }) => {
     };
 
     fetchObra();
-  }, [id]); 
+  }, [id]);
 
   if (loading) {
     return (
@@ -79,22 +66,21 @@ const ObjetoMuseo = ({ route }) => {
         <Text style={styles.label}>Número de visitas:</Text>
         <Text style={styles.details}>{obra.n_visitas}</Text>
       </View>
-      <Button title="Volver a Inicio" onPress={() => navigation.navigate('Home')} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#f5f5dc', padding: 20 },
+    container: { flex: 1, backgroundColor: '#F7F4D3', padding: 20 },
     image: { width: '100%', height: 250, borderRadius: 10, marginBottom: 20 },
-    name: { fontSize: 28, fontWeight: 'bold', color: '#8B4513', textAlign: 'center', marginBottom: 10 },
+    name: { fontSize: 28, fontWeight: 'bold', color: '#A44B3F', textAlign: 'center', marginBottom: 10 },
     infoContainer: { backgroundColor: '#fff', padding: 15, borderRadius: 10, marginBottom: 20, elevation: 3 },
     details: { fontSize: 18, color: '#6b4226', marginBottom: 10 },
-    label: { fontSize: 18, fontWeight: 'bold', color: '#8B4513' },
+    label: { fontSize: 18, fontWeight: 'bold', color: '#A44B3F' },
     errorText: { fontSize: 18, textAlign: 'center', color: 'red', marginTop: 20 },
-    loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f5f5dc" },
-    loadingText: { marginTop: 10, fontSize: 16, color: "#8B4513" },
+    loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F7F4D3" },
+    loadingText: { marginTop: 10, fontSize: 16, color: "#A44B3F" },
     errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" }
 });
 
-export default ObjetoMuseo;
+export default ObraDetalles;

@@ -27,17 +27,15 @@ export default function ScannerScreen() {
         if (data && !qrLock.current) {
             qrLock.current = true;
 
-            // 📌 Firebase usa IDs de documentos, NO números enteros, por lo que no convertimos data a número.
-            const obraId = data.trim(); // Nos aseguramos de que el ID esté limpio
+            const obraId = data.trim(); 
 
-            if (obraId.length > 5) { // 📌 Firebase IDs suelen ser largos, verificamos esto
+            if (obraId.length > 5) { 
                 setScannedText(`Redirigiendo a obra con ID: ${obraId}`);
-                navigation.navigate("ObraInfo", { id: obraId }); // 📌 Pasamos el ID a la pantalla
+                navigation.navigate("ObraInfo", { id: obraId }); 
             } else {
                 Alert.alert("Error", "El código QR no contiene un ID de obra válido.");
             }
 
-            // Permitir escaneo nuevamente después de 2 segundos
             setTimeout(() => {
                 qrLock.current = false;
             }, 2000);
@@ -48,16 +46,14 @@ export default function ScannerScreen() {
         <SafeAreaView style={StyleSheet.absoluteFillObject}>
             {Platform.OS === "android" ? <StatusBar hidden /> : null}
 
-            {/* 📷 Cámara */}
             <CameraView
                 style={StyleSheet.absoluteFillObject}
                 facing="back"
-                onBarcodeScanned={handleBarCodeScanned} // 📌 Se actualizó la función
+                onBarcodeScanned={handleBarCodeScanned} 
             />
 
             <Overlay />
 
-            {/* 📌 Mostrar el texto escaneado en la pantalla */}
             {scannedText && (
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>{scannedText}</Text>

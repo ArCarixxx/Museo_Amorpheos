@@ -39,15 +39,13 @@ import { UserContext } from "../contexts/UserContext";
     };
   
     const sendVideoToApi = async (uri) => {
-      const timeout = 600000; // 10 minutos en milisegundos
-      const controller = new AbortController(); // Crear un controlador de abortos
+      const timeout = 600000; 
+      const controller = new AbortController(); 
       const signal = controller.signal;
     
-      // Configurar el timeout
       const timeoutId = setTimeout(() => controller.abort(), timeout);
     
       try {
-        // Leer el contenido del archivo como base64
         const videoBase64 = await FileSystem.readAsStringAsync(uri, {
           encoding: FileSystem.EncodingType.Base64,
         });
@@ -56,25 +54,23 @@ import { UserContext } from "../contexts/UserContext";
         const now = new Date();
         const formattedDate = now.toISOString().replace(/[-:T]/g, '').slice(0, 15) + now.toISOString().slice(17, 19);
     
-        // Crear el cuerpo de la solicitud
         const payload = {
-          nombre: `video${formattedDate}.mov`, // Nombre del archivo
+          nombre: `video${formattedDate}.mov`, 
           descripcion: "descripcion",
-          video_base64: videoBase64, // Archivo en base64
+          video_base64: videoBase64, 
           persona_idPersona: user.idPersona,
         };
     
-        // Enviar a la API con un tiempo de espera
         const response = await fetchWithTimeout(`${API_URL}/videos`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(payload),
-          signal, // Pasar la señal del AbortController
+          signal, 
         });
     
-        clearTimeout(timeoutId); // Cancelar el timeout si la solicitud es exitosa
+        clearTimeout(timeoutId); 
     
         if (!response.ok) {
           console.log(response)
@@ -94,24 +90,21 @@ import { UserContext } from "../contexts/UserContext";
       }
     };
     const fetchWithTimeout = (url, options = {}, timeout = 60000) => {
-      const controller = new AbortController(); // Controlador para abortar la solicitud
+      const controller = new AbortController(); 
       const signal = controller.signal;
     
-      // Crear un temporizador para abortar la solicitud después del timeout
       const timeoutId = setTimeout(() => controller.abort(), timeout);
     
-      // Pasar la señal al fetch
       const fetchOptions = { ...options, signal };
     
-      // Realizar la solicitud
       return fetch(url, fetchOptions)
         .then(response => {
-          clearTimeout(timeoutId); // Cancelar el timeout si se completa exitosamente
+          clearTimeout(timeoutId); 
           return response;
         })
         .catch(error => {
-          clearTimeout(timeoutId); // Cancelar el timeout también en caso de error
-          throw error; // Relanzar el error para manejarlo en la función que llama
+          clearTimeout(timeoutId); 
+          throw error; 
         });
     };
     
@@ -121,7 +114,6 @@ import { UserContext } from "../contexts/UserContext";
       if (cameraRef.current) {
         try {
           setRecordingTime(0);
-          // Iniciar el temporizador
           timerRef.current = setInterval(() => {
             setRecordingTime((prevTime) => prevTime + 1);
           }, 1000);
@@ -150,15 +142,12 @@ import { UserContext } from "../contexts/UserContext";
       }
     };
   
-    //checkMediaLibraryPermissions();
   
     if (!permission) {
-      // Camera permissions are still loading
       return <View />;
     }
   
     if (!permission.granted) {
-      // Camera permissions are not granted yet
       return (
         <View
           style={{
@@ -210,12 +199,9 @@ import { UserContext } from "../contexts/UserContext";
     return (
       <View style={{ flex: 1 }}>
         <CameraView
-          //CameraMode={"video"}
           mode="video"
-          // videoQuality={"720p"}
           style={{ flex: 1 }}
           facing={type}
-          // ratio={"16:9"}
           ref={cameraRef}
   
         >
@@ -224,12 +210,10 @@ import { UserContext } from "../contexts/UserContext";
             <TouchableOpacity
               onPress={() => {
                 stopRecording();
-                //navigation.goBack();
               }}
               style={{
                 height: 26,
                 width: 60,
-                //paddingTop: StatusBar.currentHeight,
                 paddingLeft: 30,
                 backgroundColor: "transparent",
               }}
@@ -240,7 +224,6 @@ import { UserContext } from "../contexts/UserContext";
                   height: "100%",
                   width: "100%",
   
-                  // padding: 50,
                   borderRadius: 18,
                 }}
               />
@@ -281,12 +264,10 @@ import { UserContext } from "../contexts/UserContext";
               <Pressable
                 onPress={isRecording ? stopRecording : startRecording}
                 style={{
-                  //backgroundColor: "red",
                   height: 72,
                   width: 72,
                   alignSelf: "center",
                   top: -70,
-                  //backgroundColor: "red",
                 }}
               >
                 <Image
@@ -295,7 +276,6 @@ import { UserContext } from "../contexts/UserContext";
                       ? require("../assets/reccircle.png")
                       : require("../assets/circle.png")
                   }
-                  //id RecordButton
                   style={{
                     alignSelf: "center",
                     alignItems: "baseline",

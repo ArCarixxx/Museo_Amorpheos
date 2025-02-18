@@ -6,16 +6,15 @@ import { useCameraPermissions } from "expo-camera";
 const Home = ({ navigation }) => {
     const [permission, requestPermission] = useCameraPermissions();
 
-    // Función para solicitar permisos y navegar solo si se conceden
     const handleScanPress = async () => {
         if (!permission?.granted) {
             const { granted } = await requestPermission();
             if (!granted) {
                 Alert.alert("Permiso Denegado", "Necesitas otorgar acceso a la cámara para escanear códigos QR.");
-                return; // No navegar si no se concede el permiso
+                return; 
             }
         }
-        navigation.navigate('Scanner'); // Navegar solo si los permisos están concedidos
+        navigation.navigate('Scanner'); 
     };
 
     return (
@@ -25,14 +24,14 @@ const Home = ({ navigation }) => {
             
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('ObraInfo', { id: 1 })}
+                onPress={() => navigation.navigate('ListaObras')} // Navegar a la nueva pantalla
             >
-                <Text style={styles.buttonText}>Información Obra</Text>
+                <Text style={styles.buttonText}>Información de las Obras</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
                 style={styles.button}
-                onPress={handleScanPress} // Se ejecuta la función que maneja permisos
+                onPress={handleScanPress} 
             >
                 <Text style={styles.buttonText}>Escanear QR</Text>
             </TouchableOpacity>

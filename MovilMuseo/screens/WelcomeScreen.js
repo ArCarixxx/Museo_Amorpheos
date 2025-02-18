@@ -23,7 +23,7 @@ export default function WelcomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F4D3', // Fondo con el color deseado
+    backgroundColor: '#F7F4D3', 
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
