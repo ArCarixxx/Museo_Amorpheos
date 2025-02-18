@@ -6,7 +6,7 @@ import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
 const placeholderImage = require('../assets/Gioconda.jpg');
 
 const ObjetoMuseo = ({ route }) => {
-  const id = "9pSn7APjIepGejEZWVHq";  // Asegura que el ID provenga de params
+  const { id } = route.params; // 📌 Obtener el ID desde la navegación
   const [obra, setObra] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -43,7 +43,7 @@ const ObjetoMuseo = ({ route }) => {
     };
 
     fetchObra();
-  }, [id]);
+  }, [id]); // 📌 Ahora usa el ID del QR
 
   if (loading) {
     return (
@@ -83,16 +83,16 @@ const ObjetoMuseo = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5dc', padding: 20 },
-  image: { width: '100%', height: 250, borderRadius: 10, marginBottom: 20 },
-  name: { fontSize: 28, fontWeight: 'bold', color: '#8B4513', textAlign: 'center', marginBottom: 10 },
-  infoContainer: { backgroundColor: '#fff', padding: 15, borderRadius: 10, marginBottom: 20, elevation: 3 },
-  details: { fontSize: 18, color: '#6b4226', marginBottom: 10 },
-  label: { fontSize: 18, fontWeight: 'bold', color: '#8B4513' },
-  errorText: { fontSize: 18, textAlign: 'center', color: 'red', marginTop: 20 },
-  loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f5f5dc" },
-  loadingText: { marginTop: 10, fontSize: 16, color: "#8B4513" },
-  errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" }
+    container: { flex: 1, backgroundColor: '#f5f5dc', padding: 20 },
+    image: { width: '100%', height: 250, borderRadius: 10, marginBottom: 20 },
+    name: { fontSize: 28, fontWeight: 'bold', color: '#8B4513', textAlign: 'center', marginBottom: 10 },
+    infoContainer: { backgroundColor: '#fff', padding: 15, borderRadius: 10, marginBottom: 20, elevation: 3 },
+    details: { fontSize: 18, color: '#6b4226', marginBottom: 10 },
+    label: { fontSize: 18, fontWeight: 'bold', color: '#8B4513' },
+    errorText: { fontSize: 18, textAlign: 'center', color: 'red', marginTop: 20 },
+    loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f5f5dc" },
+    loadingText: { marginTop: 10, fontSize: 16, color: "#8B4513" },
+    errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" }
 });
 
 export default ObjetoMuseo;

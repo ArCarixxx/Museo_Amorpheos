@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from './screens/WelcomeScreen';
 import Obra from './screens/ObraScreen';
 import TutorialScreen from './screens/TutorialScreen';
+import ScannerScreen from './screens/ScannerScreen';
 import CameraScreen from './screens/CameraScreen';
 import Home from './screens/Home';
 import { UserProvider } from './contexts/UserContext';
@@ -17,6 +18,7 @@ export default function App() {
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="ObraInfo" component={Obra} />
           <Stack.Screen name="Tutorial" component={TutorialScreen} />
+          <Stack.Screen name="Scanner" component={ScannerScreen} />
           <Stack.Screen name="Camera" component={CameraScreen} />
           <Stack.Screen name="Home" component={Home} />
         </Stack.Navigator>
